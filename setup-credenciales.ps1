@@ -1,7 +1,11 @@
 param(
-    [string]$CredentialJsonPath = (Join-Path $PSScriptRoot "credenciales.json"),
+    [string]$CredentialJsonPath,
     [string]$AppPath
 )
+
+if (-not $CredentialJsonPath) {
+    $CredentialJsonPath = Join-Path $PSScriptRoot "credenciales.json"
+}
 
 if (-not $AppPath) {
     $AppPath = Get-ChildItem -LiteralPath $PSScriptRoot -Filter "*.exe" -File | Select-Object -First 1 -ExpandProperty FullName
