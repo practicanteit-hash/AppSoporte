@@ -1,3 +1,2 @@
-2026/05/06-11:21:00.316 cb4 Reusing MANIFEST C:\Users\Admin\Documents\AppSoporte\Soporte Modelos.exe.WebView2\EBWebView\Default\shared_proto_db\metadata/MANIFEST-000001
-2026/05/06-11:21:00.317 cb4 Recovering log #3
-2026/05/06-11:21:00.318 cb4 Reusing old log C:\Users\Admin\Documents\AppSoporte\Soporte Modelos.exe.WebView2\EBWebView\Default\shared_proto_db\metadata/000003.log 
+2026/05/08-09:40:21.153 3d84 Creating DB C:\Users\Admin\Documents\AppSoporte\Soporte Modelos.exe.WebView2\EBWebView\Default\shared_proto_db\metadata since it was missing.
+2026/05/08-09:40:21.210 3d84 Reusing MANIFEST C:\Users\Admin\Documents\AppSoporte\Soporte Modelos.exe.WebView2\EBWebView\Default\shared_proto_db\metadata/MANIFEST-000001
