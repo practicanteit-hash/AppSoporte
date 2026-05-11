@@ -2,8 +2,8 @@ param(
     [Parameter(Mandatory = $true)]
     [string]$Version,
     [string]$Runtime = "win-x64",
-    [string]$SquirrelPath = "C:\Tools\Squirrel\tools\Squirrel.exe",
-    [string]$SetupExeName = "Setup.exe"
+    [string]$SquirrelPath = "",
+    [string]$SetupExeName = "SoporteModelosSetup.exe"
 )
 
 $ErrorActionPreference = "Stop"
@@ -27,15 +27,6 @@ if (-not (Get-Command dotnet -ErrorAction SilentlyContinue)) {
 function Resolve-SquirrelPath {
     param([string]$PreferredPath)
 
-    if ($PreferredPath -and (Test-Path -LiteralPath $PreferredPath)) {
-        return $PreferredPath
-    }
-
-    $command = Get-Command Squirrel -ErrorAction SilentlyContinue
-    if ($command) {
-        return $command.Source
-    }
-
     $nugetRoot = Join-Path $env:USERPROFILE ".nuget\packages"
     if (Test-Path -LiteralPath $nugetRoot) {
         $candidate = Get-ChildItem -LiteralPath $nugetRoot -Recurse -Filter "Squirrel.exe" -ErrorAction SilentlyContinue |
@@ -45,6 +36,15 @@ function Resolve-SquirrelPath {
         if ($candidate) {
             return $candidate.FullName
         }
+    }
+
+    if ($PreferredPath -and (Test-Path -LiteralPath $PreferredPath)) {
+        return $PreferredPath
+    }
+
+    $command = Get-Command Squirrel -ErrorAction SilentlyContinue
+    if ($command) {
+        return $command.Source
     }
 
     return $null
@@ -59,59 +59,36 @@ Write-Host "Publicando en $publishDir"
 
 dotnet publish $projectPath -c Release -r $Runtime -o $publishDir
 
-Write-Host "Generando paquete NuGet para Squirrel"
+Write-Host "Preparando carpeta para Squirrel"
 
 $packRoot = Join-Path $publishDir "pack"
+$packDir = Join-Path $packRoot "app"
 if (Test-Path -LiteralPath $packRoot) {
     Remove-Item -LiteralPath $packRoot -Recurse -Force
 }
 
-$libDir = Join-Path $packRoot "lib\net10.0-windows"
-New-Item -ItemType Directory -Path $libDir -Force | Out-Null
+New-Item -ItemType Directory -Path $packDir -Force | Out-Null
 
 $publishItems = Get-ChildItem -LiteralPath $publishDir | Where-Object {
     $_.Name -notin @("Releases", "pack") -and $_.Extension -ne ".nupkg"
 }
 
 foreach ($item in $publishItems) {
-    Copy-Item -LiteralPath $item.FullName -Destination $libDir -Recurse -Force
-}
-
-$nuspecPath = Join-Path $packRoot "SoporteModelos.nuspec"
-$nuspecContent = @"
-<?xml version="1.0"?>
-<package>
-  <metadata>
-    <id>SoporteModelos</id>
-    <version>$Version</version>
-    <authors>SoporteModelos</authors>
-    <description>Soporte Modelos</description>
-    <requireLicenseAcceptance>false</requireLicenseAcceptance>
-  </metadata>
-</package>
-"@
-
-Set-Content -LiteralPath $nuspecPath -Value $nuspecContent -Encoding UTF8
-
-
-$tempZipPath = Join-Path $publishDir "SoporteModelos.$Version.zip"
-$nupkgPath = Join-Path $publishDir "SoporteModelos.$Version.nupkg"
-if (Test-Path -LiteralPath $tempZipPath) {
-    Remove-Item -LiteralPath $tempZipPath -Force
-}
-if (Test-Path -LiteralPath $nupkgPath) {
-    Remove-Item -LiteralPath $nupkgPath -Force
-}
-
-Compress-Archive -Path (Join-Path $packRoot "*") -DestinationPath $tempZipPath
-Rename-Item -LiteralPath $tempZipPath -NewName (Split-Path -Leaf $nupkgPath)
-
-if (-not (Test-Path -LiteralPath $nupkgPath)) {
-    throw "No se encontró el .nupkg en $publishDir"
+    Copy-Item -LiteralPath $item.FullName -Destination $packDir -Recurse -Force
 }
 
 Write-Host "Generando Releases de Squirrel"
 
-& $resolvedSquirrelPath --releasify $nupkgPath --releaseDir (Join-Path $publishDir "Releases") --setupExe $SetupExeName
+& $resolvedSquirrelPath pack --releaseDir (Join-Path $publishDir "Releases") --packId SoporteModelos --packVersion $Version --packDir $packDir --allowUnaware
+
+$releaseDir = Join-Path $publishDir "Releases"
+$releasesFile = Join-Path $releaseDir "RELEASES"
+$setupExePath = Join-Path $releaseDir $SetupExeName
+$fullPackage = Get-ChildItem -LiteralPath $releaseDir -Filter "*-full.nupkg" -ErrorAction SilentlyContinue | Select-Object -First 1
+
+if (-not (Test-Path -LiteralPath $releasesFile) -or -not (Test-Path -LiteralPath $setupExePath) -or -not $fullPackage) {
+    $existing = if (Test-Path -LiteralPath $releaseDir) { (Get-ChildItem -LiteralPath $releaseDir | Select-Object -ExpandProperty Name) -join ", " } else { "(sin carpeta Releases)" }
+    throw "No se generaron todos los archivos esperados (RELEASES, Setup.exe, *-full.nupkg). Archivos encontrados: $existing"
+}
 
 Write-Host "Listo. Archivos en: $(Join-Path $publishDir "Releases")"
