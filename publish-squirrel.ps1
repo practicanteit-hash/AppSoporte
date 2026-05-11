@@ -2,7 +2,8 @@ param(
     [Parameter(Mandatory = $true)]
     [string]$Version,
     [string]$Runtime = "win-x64",
-    [string]$SquirrelPath = "C:\Tools\Squirrel\tools\Squirrel.exe"
+    [string]$SquirrelPath = "C:\Tools\Squirrel\tools\Squirrel.exe",
+    [string]$SetupExeName = "Setup.exe"
 )
 
 $ErrorActionPreference = "Stop"
@@ -71,6 +72,6 @@ if (-not $nupkg) {
 
 Write-Host "Generando Releases de Squirrel"
 
-& $resolvedSquirrelPath --releasify $nupkg.FullName --releaseDir (Join-Path $publishDir "Releases")
+& $resolvedSquirrelPath --releasify $nupkg.FullName --releaseDir (Join-Path $publishDir "Releases") --setupExe $SetupExeName
 
 Write-Host "Listo. Archivos en: $(Join-Path $publishDir "Releases")"
