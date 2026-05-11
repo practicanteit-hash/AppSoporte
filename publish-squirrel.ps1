@@ -7,20 +7,21 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-$projectPath = Join-Path $PSScriptRoot "Soporte Modelos\Soporte Modelos.csproj"
+$projectPath = "C:\Users\Admin\source\repos\Soporte Modelos\Soporte Modelos\Soporte Modelos.csproj"
 $publishDir = Join-Path $PSScriptRoot "publish"
 
-if (-not (Test-Path -LiteralPath $projectPath)) {
-    throw "No se encontró el proyecto: $projectPath"
+if (-not $projectPath -or -not (Test-Path -LiteralPath $projectPath)) {
+    $projectPath = Read-Host "No se encontró el .csproj. Ingresa la ruta completa del .csproj"
+}
+
+if (-not $projectPath -or -not (Test-Path -LiteralPath $projectPath)) {
+    throw "No se encontró el proyecto (.csproj)."
 }
 
 if (-not (Get-Command dotnet -ErrorAction SilentlyContinue)) {
     throw "dotnet no está disponible en PATH"
 }
 
-if (-not (Get-Command nuget -ErrorAction SilentlyContinue)) {
-    throw "nuget.exe no está disponible en PATH"
-}
 
 function Resolve-SquirrelPath {
     param([string]$PreferredPath)
@@ -61,7 +62,7 @@ Write-Host "Generando paquete NuGet"
 
 $env:NUGET_PACKAGES = Join-Path $PSScriptRoot "packages"
 
-nuget pack $projectPath -Properties Configuration=Release -OutputDirectory $publishDir -Version $Version
+dotnet pack $projectPath -c Release -o $publishDir -p:PackageVersion=$Version
 
 $nupkg = Get-ChildItem -LiteralPath $publishDir -Filter "*.nupkg" | Sort-Object LastWriteTime -Descending | Select-Object -First 1
 if (-not $nupkg) {
