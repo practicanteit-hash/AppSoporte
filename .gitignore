@@ -23,6 +23,10 @@ obj/
 publish/
 **/publish/
 
+# WebView2 user data
+Soporte Modelos.exe.WebView2/
+**/Soporte Modelos.exe.WebView2/
+
 # Logs
 *.log
 
@@ -391,5 +395,4 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-publish-squirrel.ps1
 publish-squirrel.ps1

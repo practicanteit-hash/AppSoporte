@@ -59,19 +59,59 @@ Write-Host "Publicando en $publishDir"
 
 dotnet publish $projectPath -c Release -r $Runtime -o $publishDir
 
-Write-Host "Generando paquete NuGet"
+Write-Host "Generando paquete NuGet para Squirrel"
 
-$env:NUGET_PACKAGES = Join-Path $PSScriptRoot "packages"
+$packRoot = Join-Path $publishDir "pack"
+if (Test-Path -LiteralPath $packRoot) {
+    Remove-Item -LiteralPath $packRoot -Recurse -Force
+}
 
-dotnet pack $projectPath -c Release -o $publishDir -p:PackageVersion=$Version
+$libDir = Join-Path $packRoot "lib\net10.0-windows"
+New-Item -ItemType Directory -Path $libDir -Force | Out-Null
 
-$nupkg = Get-ChildItem -LiteralPath $publishDir -Filter "*.nupkg" | Sort-Object LastWriteTime -Descending | Select-Object -First 1
-if (-not $nupkg) {
+$publishItems = Get-ChildItem -LiteralPath $publishDir | Where-Object {
+    $_.Name -notin @("Releases", "pack") -and $_.Extension -ne ".nupkg"
+}
+
+foreach ($item in $publishItems) {
+    Copy-Item -LiteralPath $item.FullName -Destination $libDir -Recurse -Force
+}
+
+$nuspecPath = Join-Path $packRoot "SoporteModelos.nuspec"
+$nuspecContent = @"
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>SoporteModelos</id>
+    <version>$Version</version>
+    <authors>SoporteModelos</authors>
+    <description>Soporte Modelos</description>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+  </metadata>
+</package>
+"@
+
+Set-Content -LiteralPath $nuspecPath -Value $nuspecContent -Encoding UTF8
+
+
+$tempZipPath = Join-Path $publishDir "SoporteModelos.$Version.zip"
+$nupkgPath = Join-Path $publishDir "SoporteModelos.$Version.nupkg"
+if (Test-Path -LiteralPath $tempZipPath) {
+    Remove-Item -LiteralPath $tempZipPath -Force
+}
+if (Test-Path -LiteralPath $nupkgPath) {
+    Remove-Item -LiteralPath $nupkgPath -Force
+}
+
+Compress-Archive -Path (Join-Path $packRoot "*") -DestinationPath $tempZipPath
+Rename-Item -LiteralPath $tempZipPath -NewName (Split-Path -Leaf $nupkgPath)
+
+if (-not (Test-Path -LiteralPath $nupkgPath)) {
     throw "No se encontró el .nupkg en $publishDir"
 }
 
 Write-Host "Generando Releases de Squirrel"
 
-& $resolvedSquirrelPath --releasify $nupkg.FullName --releaseDir (Join-Path $publishDir "Releases") --setupExe $SetupExeName
+& $resolvedSquirrelPath --releasify $nupkgPath --releaseDir (Join-Path $publishDir "Releases") --setupExe $SetupExeName
 
 Write-Host "Listo. Archivos en: $(Join-Path $publishDir "Releases")"
