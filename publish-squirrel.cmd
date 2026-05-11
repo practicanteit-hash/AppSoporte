@@ -1,7 +1,7 @@
 @echo off
 set "version=%~1"
 if "%version%"=="" (
-  set /p version=Ingresa la version (ej: 1.0.1): 
+  set /p version=Ingresa la version ^(ej 1.0.1^): 
 )
 
 if "%version%"=="" (
