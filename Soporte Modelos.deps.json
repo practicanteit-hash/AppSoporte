@@ -9,14 +9,23 @@
     ".NETCoreApp,Version=v10.0/win-x86": {
       "Soporte Modelos/1.0.0": {
         "dependencies": {
+          "Clowd.Squirrel": "2.11.1",
           "Google.Apis.Sheets.v4": "1.73.0.4061",
-          "Microsoft.Web.WebView2": "1.0.3856.49",
-          "Microsoft.Web.WebView2.Core": "1.0.3856.49",
-          "Microsoft.Web.WebView2.WinForms": "1.0.3856.49",
-          "Microsoft.Web.WebView2.Wpf": "1.0.3856.49"
+          "Microsoft.Web.WebView2": "1.0.3912.50",
+          "Microsoft.Web.WebView2.Core": "1.0.3912.50",
+          "Microsoft.Web.WebView2.WinForms": "1.0.3912.50",
+          "Microsoft.Web.WebView2.Wpf": "1.0.3912.50"
         },
         "runtime": {
           "Soporte Modelos.dll": {}
+        }
+      },
+      "Clowd.Squirrel/2.11.1": {
+        "runtime": {
+          "lib/net6.0/SquirrelLib.dll": {
+            "assemblyVersion": "2.11.0.0",
+            "fileVersion": "2.11.1.36034"
+          }
         }
       },
       "Google.Apis/1.73.0": {
@@ -66,10 +75,10 @@
           }
         }
       },
-      "Microsoft.Web.WebView2/1.0.3856.49": {
+      "Microsoft.Web.WebView2/1.0.3912.50": {
         "native": {
           "runtimes/win-x86/native/WebView2Loader.dll": {
-            "fileVersion": "1.0.3856.49"
+            "fileVersion": "1.0.3912.50"
           }
         }
       },
@@ -89,27 +98,27 @@
           }
         }
       },
-      "Microsoft.Web.WebView2.Core/1.0.3856.49": {
+      "Microsoft.Web.WebView2.Core/1.0.3912.50": {
         "runtime": {
           "Microsoft.Web.WebView2.Core.dll": {
-            "assemblyVersion": "1.0.3856.49",
-            "fileVersion": "1.0.3856.49"
+            "assemblyVersion": "1.0.3912.50",
+            "fileVersion": "1.0.3912.50"
           }
         }
       },
-      "Microsoft.Web.WebView2.WinForms/1.0.3856.49": {
+      "Microsoft.Web.WebView2.WinForms/1.0.3912.50": {
         "runtime": {
           "Microsoft.Web.WebView2.WinForms.dll": {
-            "assemblyVersion": "1.0.3856.49",
-            "fileVersion": "1.0.3856.49"
+            "assemblyVersion": "1.0.3912.50",
+            "fileVersion": "1.0.3912.50"
           }
         }
       },
-      "Microsoft.Web.WebView2.Wpf/1.0.3856.49": {
+      "Microsoft.Web.WebView2.Wpf/1.0.3912.50": {
         "runtime": {
           "Microsoft.Web.WebView2.Wpf.dll": {
-            "assemblyVersion": "1.0.3856.49",
-            "fileVersion": "1.0.3856.49"
+            "assemblyVersion": "1.0.3912.50",
+            "fileVersion": "1.0.3912.50"
           }
         }
       }
@@ -120,6 +129,13 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "Clowd.Squirrel/2.11.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-tregtapTyVXjwhgyc4llUNh8HX3008yrglakUWQocgtGf2bOBHcibgixakkb2yB1FrM/gPDpxykg4sWtFzjpVg==",
+      "path": "clowd.squirrel/2.11.1",
+      "hashPath": "clowd.squirrel.2.11.1.nupkg.sha512"
     },
     "Google.Apis/1.73.0": {
       "type": "package",
@@ -149,12 +165,12 @@
       "path": "google.apis.sheets.v4/1.73.0.4061",
       "hashPath": "google.apis.sheets.v4.1.73.0.4061.nupkg.sha512"
     },
-    "Microsoft.Web.WebView2/1.0.3856.49": {
+    "Microsoft.Web.WebView2/1.0.3912.50": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-OOBKvFgK0pUKcndvTK6/jUsbrPRwce62Wt/0hkJWDsK2AcsJ2ylOS/mLa4xAcNUTOs96YIjpPN4AHMADXJcrgQ==",
-      "path": "microsoft.web.webview2/1.0.3856.49",
-      "hashPath": "microsoft.web.webview2.1.0.3856.49.nupkg.sha512"
+      "sha512": "sha512-mEIKZDSmb6CxGWKoxaxTSJ0yi0DD2zp29TA7kJY2GdanuH3c5aYruwfqsm3OsYn/h2hUhybQZvfbxyZe4O+X4Q==",
+      "path": "microsoft.web.webview2/1.0.3912.50",
+      "hashPath": "microsoft.web.webview2.1.0.3912.50.nupkg.sha512"
     },
     "Newtonsoft.Json/13.0.4": {
       "type": "package",
@@ -170,17 +186,17 @@
       "path": "system.management/7.0.2",
       "hashPath": "system.management.7.0.2.nupkg.sha512"
     },
-    "Microsoft.Web.WebView2.Core/1.0.3856.49": {
+    "Microsoft.Web.WebView2.Core/1.0.3912.50": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""
     },
-    "Microsoft.Web.WebView2.WinForms/1.0.3856.49": {
+    "Microsoft.Web.WebView2.WinForms/1.0.3912.50": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""
     },
-    "Microsoft.Web.WebView2.Wpf/1.0.3856.49": {
+    "Microsoft.Web.WebView2.Wpf/1.0.3912.50": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""
